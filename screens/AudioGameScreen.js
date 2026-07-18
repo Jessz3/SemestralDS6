@@ -40,9 +40,8 @@ export default function AudioGameScreen({ navigation }) {
         await sound.unloadAsync();
       }
 
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        current.audio
-      );
+      const { sound: newSound } =
+        await Audio.Sound.createAsync(current.audio);
 
       setSound(newSound);
 
@@ -78,24 +77,41 @@ export default function AudioGameScreen({ navigation }) {
 
   return (
     <ImageBackground
-      backgroundColor="#c9e3f9"
+      source={require('../assets/img/FONDO_PLANO.png')}
       style={styles.background}
       resizeMode="cover"
     >
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
-          {/* TÍTULO */}
           <Text style={styles.title}>
             ¿Qué figura escuchas?
           </Text>
 
-          {/* PROGRESO */}
           <Text style={styles.progress}>
             Ronda {roundIndex + 1}/{audioRounds.length}
           </Text>
 
-          {/* BOTÓN DE AUDIO */}
+          <View style={styles.options}>
+            {figures.map((item) => (
+              <Pressable
+                key={item.id}
+                onPress={() => selectFigure(item)}
+                disabled={locked}
+                style={({ pressed }) => [
+                  styles.option,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Image
+                  source={item.image}
+                  style={styles.figureImage}
+                  resizeMode="contain"
+                />
+              </Pressable>
+            ))}
+          </View>
+
           <Pressable
             onPress={playAudio}
             style={({ pressed }) => [
@@ -110,36 +126,11 @@ export default function AudioGameScreen({ navigation }) {
             />
           </Pressable>
 
-          {/* FIGURAS */}
-          <View style={styles.options}>
-            {figures.map((item) => (
-              <Pressable
-                key={item.id}
-                onPress={() => selectFigure(item)}
-                disabled={locked}
-                style={({ pressed }) => [
-                  styles.option,
-                  pressed && styles.pressed,
-                ]}
-              >
-                <Image
-                  source={item.audioImage}
-                  style={styles.figureImage}
-                  resizeMode="contain"
-                />
-
-                <Text style={styles.name}>
-                  {item.name}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {/* FEEDBACK */}
           <Text
             style={[
               styles.feedback,
-              feedback.startsWith('¡Correcto') && styles.correct,
+              feedback.startsWith('¡Correcto') &&
+                styles.correct,
             ]}
           >
             {feedback || 'Escucha el audio y toca una figura.'}
@@ -169,7 +160,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '900',
-    color: '#FF8C00',
+    color: '#0f0f0f',
     marginTop: 25,
     textAlign: 'center',
   },
@@ -182,12 +173,12 @@ const styles = StyleSheet.create({
   },
 
   audioButton: {
-    marginTop: 15,
+    marginTop: -25,
   },
 
   audioButtonImage: {
-    width: 150,
-    height: 150,
+    width: 220,
+    height: 220,
   },
 
   options: {
@@ -199,37 +190,16 @@ const styles = StyleSheet.create({
   },
 
   option: {
-    width: 135,
-    height: 135,
-
-    margin: 8,
-
-    borderRadius: 22,
-
-    backgroundColor: '#FFFFFF',
-
-    borderWidth: 3,
-    borderColor: '#FF8C00',
-
+    width: 150,
+    height: 200,
+    margin: 20,
     alignItems: 'center',
     justifyContent: 'center',
-
-    elevation: 3,
   },
 
   figureImage: {
-    width: 85,
-    height: 85,
-  },
-
-  name: {
-    marginTop: 5,
-
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#000000',
-
-    textAlign: 'center',
+    width: 220,
+    height: 220,
   },
 
   pressed: {
@@ -239,12 +209,9 @@ const styles = StyleSheet.create({
 
   feedback: {
     marginTop: 12,
-
     fontSize: 19,
     fontWeight: '700',
-
     color: '#D32F2F',
-
     textAlign: 'center',
   },
 
@@ -252,3 +219,4 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
   },
 });
+
