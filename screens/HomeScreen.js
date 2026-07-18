@@ -1,9 +1,19 @@
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import PrimaryButton from '../components/PrimaryButton';
+import {
+  Alert,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+
 import { startGame } from '../storage/storage';
-import Colors from '../styles/colors';
 
 export default function HomeScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -11,6 +21,7 @@ export default function HomeScreen({ navigation }) {
 
   const handleStart = async () => {
     const cleanName = name.trim();
+
     if (!cleanName) {
       Alert.alert('Falta tu nombre', 'Escribe tu nombre para comenzar.');
       return;
@@ -18,7 +29,9 @@ export default function HomeScreen({ navigation }) {
 
     try {
       setLoading(true);
+
       await startGame(cleanName);
+
       navigation.replace('Memory');
     } catch {
       Alert.alert('Error', 'No se pudo iniciar el juego.');
@@ -28,41 +41,163 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <Text style={styles.logo}>🎮</Text>
-        <Text style={styles.title}>¡Vamos a jugar!</Text>
-        <Text style={styles.subtitle}>¿Cómo te llamas?</Text>
+    <ImageBackground
+      source={require('../assets/img/FONDO_BONITO.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.safe}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
 
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Escribe tu nombre"
-          maxLength={20}
-          autoCapitalize="words"
-          returnKeyType="done"
-          onSubmitEditing={handleStart}
-          style={styles.input}
-        />
+          {/* TÍTULO */}
+          <Text style={styles.title}>
+            FIGÚRALO
+          </Text>
 
-        <PrimaryButton title={loading ? 'Cargando...' : 'Comenzar'} onPress={handleStart} disabled={loading} />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          {/* IMAGEN DE LA IZQUIERDA */}
+          <Image
+            source={require('../assets/img/FIGURALICIA_CUERPO.png')}
+            style={styles.leftImage}
+            resizeMode="contain"
+          />
+
+          {/* PERSONAJE Y TEXTO DE LA DERECHA */}
+          <View style={styles.characterContainer}>
+            <Image
+              source={require('../assets/img/NUBE.png')}
+              style={styles.rightImage}
+              resizeMode="contain"
+            />
+
+            <Text style={styles.characterText}>
+              ¡Hola! Me llamo Figuralicia.{'\n'}
+              ¿Tú cómo te llamas?
+            </Text>
+          </View>
+
+          {/* INPUT */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Escribe tu nombre"
+              maxLength={20}
+              autoCapitalize="words"
+              returnKeyType="done"
+              style={styles.input}
+            />
+          </View>
+
+          {/* BOTÓN */}
+          <Pressable
+            style={styles.startButton}
+            onPress={handleStart}
+            disabled={loading}
+          >
+            <Image
+              source={require('../assets/img/BOTON_EMPEZAR.png')}
+              style={styles.buttonImage}
+              resizeMode="contain"
+            />
+          </Pressable>
+
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
-  logo: { fontSize: 82, marginBottom: 12 },
-  title: { fontSize: 32, fontWeight: '800', color: Colors.text, marginBottom: 8 },
-  subtitle: { fontSize: 21, color: Colors.muted, marginBottom: 20 },
+  background: {
+    flex: 1,
+  },
+
+  safe: {
+    flex: 1,
+  },
+
+  container: {
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  title: {
+    position: 'absolute',
+    top: 35,
+    fontSize: 75,
+    fontWeight: '900',
+    color: '#FF8C00',
+    fontFamily: 'Comic Sans MS',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+  },
+
+  leftImage: {
+    position: 'absolute',
+    left: -160,
+    top: 180,
+    width: 600,
+    height: 600,
+  },
+
+  characterContainer: {
+    position: 'absolute',
+    right: 15,
+    top: 120,
+    width: 210,
+    height: 230,
+    alignItems: 'center',
+  },
+
+  rightImage: {
+    width: 230,
+    height: 230,
+  },
+
+  characterText: {
+    position: 'absolute',
+    top: 80,
+    left: 25,
+    width: 180,
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#000000',
+    textAlign: 'center',
+    fontFamily: 'Comic Sans MS',
+  },
+
+  inputContainer: {
+    position: 'absolute',
+    right: 15,
+    bottom: 300,
+  },
+
   input: {
-    width: '100%', maxWidth: 360, backgroundColor: Colors.white, borderWidth: 2,
-    borderColor: Colors.secondary, borderRadius: 16, paddingHorizontal: 18,
-    paddingVertical: 14, fontSize: 20, textAlign: 'center', marginBottom: 24,
+    width: 230,
+    height: 55,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 3,
+    borderColor: '#FF8C00',
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    fontSize: 21,
+    textAlign: 'center',
+
+    fontFamily: 'Comic Sans MS',
+  },
+
+  startButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 15,
+  },
+
+  buttonImage: {
+    width: 250,
+    height: 250,
   },
 });
