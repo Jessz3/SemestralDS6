@@ -1,51 +1,101 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+
 import Card from '../components/Card';
-import Colors from '../styles/colors';
 import { memoryPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
 
 function createDeck() {
   return shuffle(
     memoryPairs.flatMap((item) => [
-      { id: `${item.id}-1`, pairId: item.id, emoji: item.emoji, flipped: false, matched: false },
-      { id: `${item.id}-2`, pairId: item.id, emoji: item.emoji, flipped: false, matched: false },
+      {
+        id: `${item.id}-1`,
+        pairId: item.id,
+        image: item.memoryImage,
+        flipped: false,
+        matched: false,
+      },
+      {
+        id: `${item.id}-2`,
+        pairId: item.id,
+        image: item.memoryImage,
+        flipped: false,
+        matched: false,
+      },
     ])
   );
 }
 
 export default function MemoryGameScreen({ navigation }) {
   const initialDeck = useMemo(createDeck, []);
+
   const [cards, setCards] = useState(initialDeck);
   const [selected, setSelected] = useState([]);
   const [locked, setLocked] = useState(false);
 
   const handleCardPress = (id) => {
-    if (locked || selected.length === 2) return;
+    if (locked || selected.length === 2) {
+      return;
+    }
 
-    setCards((current) => current.map((card) => card.id === id ? { ...card, flipped: true } : card));
+    setCards((current) =>
+      current.map((card) =>
+        card.id === id
+          ? { ...card, flipped: true }
+          : card
+      )
+    );
+
     setSelected((current) => [...current, id]);
   };
 
   useEffect(() => {
-    if (selected.length !== 2) return;
+    if (selected.length !== 2) {
+      return;
+    }
 
     const [firstId, secondId] = selected;
+
     const first = cards.find((card) => card.id === firstId);
     const second = cards.find((card) => card.id === secondId);
-    if (!first || !second) return;
+
+    if (!first || !second) {
+      return;
+    }
 
     setLocked(true);
+
     const isMatch = first.pairId === second.pairId;
 
     const timeout = setTimeout(() => {
-      setCards((current) => current.map((card) => {
-        if (card.id !== firstId && card.id !== secondId) return card;
-        return isMatch
-          ? { ...card, matched: true, flipped: true }
-          : { ...card, flipped: false };
-      }));
+      setCards((current) =>
+        current.map((card) => {
+          if (
+            card.id !== firstId &&
+            card.id !== secondId
+          ) {
+            return card;
+          }
+
+          return isMatch
+            ? {
+                ...card,
+                matched: true,
+                flipped: true,
+              }
+            : {
+                ...card,
+                flipped: false,
+              };
+        })
+      );
+
       setSelected([]);
       setLocked(false);
     }, isMatch ? 450 : 900);
@@ -54,35 +104,103 @@ export default function MemoryGameScreen({ navigation }) {
   }, [selected, cards]);
 
   useEffect(() => {
-    if (cards.length > 0 && cards.every((card) => card.matched)) {
-      const timeout = setTimeout(() => navigation.replace('Match'), 800);
+    if (
+      cards.length > 0 &&
+      cards.every((card) => card.matched)
+    ) {
+      const timeout = setTimeout(() => {
+        navigation.replace('Match');
+      }, 800);
+
       return () => clearTimeout(timeout);
     }
   }, [cards, navigation]);
 
-  const matchedPairs = cards.filter((card) => card.matched).length / 2;
+  const matchedPairs =
+    cards.filter((card) => card.matched).length / 2;
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Encuentra los pares</Text>
-        <Text style={styles.progress}>Pares encontrados: {matchedPairs}/3</Text>
-        <View style={styles.grid}>
-          {cards.map((card) => (
-            <Card key={card.id} card={card} onPress={handleCardPress} disabled={locked} />
-          ))}
+    <ImageBackground
+      backgroundColor="#c9e3f9"
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.container}>
+
+          <Text style={styles.title}>
+            Encuentra los pares
+          </Text>
+
+          <Text style={styles.progress}>
+            Pares encontrados: {matchedPairs}/3
+          </Text>
+
+          <View style={styles.grid}>
+            {cards.map((card) => (
+              <Card
+                key={card.id}
+                card={card}
+                onPress={handleCardPress}
+                disabled={locked}
+              />
+            ))}
+          </View>
+
+          <Text style={styles.help}>
+            Toca dos cartas iguales.
+          </Text>
+
         </View>
-        <Text style={styles.help}>Toca dos cartas iguales.</Text>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Colors.background },
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 },
-  title: { fontSize: 28, fontWeight: '800', color: Colors.text, marginBottom: 8 },
-  progress: { fontSize: 18, color: Colors.muted, marginBottom: 18 },
-  grid: { width: 330, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
-  help: { fontSize: 17, color: Colors.muted, marginTop: 16 },
+  background: {
+    flex: 1,
+  },
+
+  safe: {
+    flex: 1,
+  },
+
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 16,
+  },
+
+  title: {
+    marginTop: 35,
+    fontSize: 38,
+    fontWeight: '900',
+    color: '#FF8C00',
+    textAlign: 'center'
+  },
+
+  progress: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '700',
+
+    color: '#000000',
+  },
+
+  grid: {
+    width: 350,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
+
+  help: {
+    marginTop: 20,
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#000000',
+    textAlign: 'center',
+  },
 });

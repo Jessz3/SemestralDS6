@@ -1,8 +1,8 @@
 export const figures = [
-  { id: 'dog', name: 'Perro', emoji: '🐶', audio: require('../assets/audio/perro.wav') },
-  { id: 'cat', name: 'Gato', emoji: '🐱', audio: require('../assets/audio/gato.wav') },
-  { id: 'car', name: 'Carro', emoji: '🚗', audio: require('../assets/audio/carro.wav') },
-  { id: 'apple', name: 'Manzana', emoji: '🍎', audio: require('../assets/audio/manzana.wav') },
+  { id: 'triangulo', name: 'Triángulo', memoryImage: require('../assets/img/CARTA_TRIANGULO.png'), audioImage: require('../assets/img/TRIANGULO.png'), audio: require('../assets/audio/perro.wav') },
+  { id: 'cuadrado', name: 'Cuadrado', memoryImage: require('../assets/img/CARTA_CUADRADO.png'), audioImage: require('../assets/img/CUADRADO.png'), audio: require('../assets/audio/gato.wav') },
+  { id: 'circulo', name: 'Círculo', memoryImage: require('../assets/img/CARTA_CIRCULO.png'), audioImage: require('../assets/img/CIRCULO.png'), audio: require('../assets/audio/carro.wav') },
+  { id: 'estrella', name: 'Estrella', memoryImage: require('../assets/img/CARTA_ESTRELLA.png'), audioImage: require('../assets/img/ESTRELLA.png'), audio: require('../assets/audio/manzana.wav') },
 ];
 
 export const memoryPairs = figures.slice(0, 3);
