@@ -77,7 +77,7 @@ export default function AudioGameScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/img/FONDO_PLANO.png')}
+      backgroundColor="#c9e3f9"
       style={styles.background}
       resizeMode="cover"
     >
