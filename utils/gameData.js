@@ -6,5 +6,5 @@ export const figures = [
 ];
 
 export const memoryPairs = figures.slice(0, 3);
-export const audioRounds = figures.slice(0, 3);
+export const audioRounds = figures;
 export const matchPairs = figures;

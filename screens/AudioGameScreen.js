@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
 
@@ -185,21 +186,21 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     marginTop: 10,
   },
 
   option: {
-    width: 150,
-    height: 200,
-    margin: 20,
+    width: '45%',
+    height: 170,
+    marginVertical: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   figureImage: {
-    width: 220,
-    height: 220,
+    width: 200,
+    height: 200,
   },
 
   pressed: {
