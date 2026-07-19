@@ -212,10 +212,11 @@ export default function MatchGameScreen({ navigation }) {
 
   return (
     <ImageBackground
-      backgroundColor="#c9e3f9"
+      source={require('../assets/img/FONDO_PLANO.png')}
       style={styles.background}
       resizeMode="cover"
     >
+      <View style={styles.overlay} />
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
@@ -406,5 +407,10 @@ const styles = StyleSheet.create({
   pauseImage: {
     width: 48,
     height: 48,
+  },
+
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,255,255,0.70)',
   },
 });

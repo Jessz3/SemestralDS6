@@ -17,16 +17,7 @@ export default function SuccessScreen({ navigation, route }) {
       <SafeAreaView style={styles.safe}>
 
         <View style={styles.container}>
-          <Pressable
-            onPress={() => navigation.navigate('Pause')}
-            style={styles.pauseButton}
-          >
-            <Image
-              source={require('../assets/img/PAUSA.png')}
-              style={styles.pauseImage}
-              resizeMode="contain"
-            />
-          </Pressable>
+          
 
           <View style={styles.infoCard}>
 

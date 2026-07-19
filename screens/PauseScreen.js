@@ -49,8 +49,8 @@ export default function PauseScreen({ navigation }) {
                 ]}
               >
                 <Image
-                  source={require('../assets/img/REINICIAR.png')}
-                  style={styles.button}
+                  source={require('../assets/img/SALIR.png')}
+                  style={[styles.button, styles.exitButton]}
                   resizeMode="contain"
                 />
               </Pressable>
@@ -179,5 +179,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 
+  exitButton: {
+    opacity: 0.9,
+  },
 
 });
