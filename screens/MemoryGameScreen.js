@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  Image,
+  Pressable,
   ImageBackground,
   SafeAreaView,
   StyleSheet,
@@ -109,7 +111,10 @@ export default function MemoryGameScreen({ navigation }) {
       cards.every((card) => card.matched)
     ) {
       const timeout = setTimeout(() => {
-        navigation.replace('Match');
+        navigation.replace('Exito', {
+          nextScreen: 'Match',
+          gameName: 'el juego de memoria',
+        });
       }, 800);
 
       return () => clearTimeout(timeout);
@@ -127,6 +132,17 @@ export default function MemoryGameScreen({ navigation }) {
     >
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
+
+          <Pressable
+            onPress={() => navigation.navigate('Pause')}
+            style={styles.pauseButton}
+          >
+            <Image
+              source={require('../assets/img/PAUSA.png')}
+              style={styles.pauseImage}
+              resizeMode="contain"
+            />
+          </Pressable>
 
           <Text style={styles.title}>
             Encuentra los pares
@@ -203,5 +219,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#000000',
     textAlign: 'center',
+  },
+
+  pauseButton: {
+    position: 'absolute',
+    top: 12,
+    right: 18,
+    zIndex: 20,
+  },
+
+  pauseImage: {
+    width: 48,
+    height: 48,
   },
 });

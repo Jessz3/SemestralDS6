@@ -84,6 +84,17 @@ export default function AudioGameScreen({ navigation }) {
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
+          <Pressable
+            onPress={() => navigation.navigate('Pause')}
+            style={styles.pauseButton}
+          >
+            <Image
+              source={require('../assets/img/PAUSA.png')}
+              style={styles.pauseImage}
+              resizeMode="contain"
+            />
+          </Pressable>
+
           <Text style={styles.title}>
             ¿Qué figura escuchas?
           </Text>
@@ -218,6 +229,18 @@ const styles = StyleSheet.create({
 
   correct: {
     color: '#2E7D32',
+  },
+
+  pauseButton: {
+    position: 'absolute',
+    top: 12,
+    right: 18,
+    zIndex: 20,
+  },
+
+  pauseImage: {
+    width: 48,
+    height: 48,
   },
 });
 

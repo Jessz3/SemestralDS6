@@ -5,6 +5,8 @@ import HomeScreen from '../screens/HomeScreen';
 import MemoryGameScreen from '../screens/MemoryGameScreen';
 import MatchGameScreen from '../screens/MatchGameScreen';
 import AudioGameScreen from '../screens/AudioGameScreen';
+import ExitoScreen from '../screens/ExitoScreen';
+import PauseScreen from '../screens/PauseScreen';
 import ResultScreen from '../screens/ResultScreen';
 
 const Stack = createNativeStackNavigator();
@@ -37,6 +39,16 @@ export default function StackNavigator() {
         <Stack.Screen
           name="Audio"
           component={AudioGameScreen}
+        />
+
+        <Stack.Screen
+          name="Exito"
+          component={ExitoScreen}
+        />
+
+        <Stack.Screen
+          name="Pause"
+          component={PauseScreen}
         />
 
         <Stack.Screen

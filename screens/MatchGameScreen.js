@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import {
   Image,
+  Pressable,
   ImageBackground,
   PanResponder,
   StyleSheet,
@@ -124,7 +125,10 @@ export default function MatchGameScreen({ navigation }) {
 
         if (next.length === leftItems.length) {
           setTimeout(() => {
-            navigation.replace('Audio');
+            navigation.replace('Exito', {
+              nextScreen: 'Audio',
+              gameName: 'el juego de parejas',
+            });
           }, 700);
         }
       }
@@ -214,6 +218,17 @@ export default function MatchGameScreen({ navigation }) {
     >
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
+
+          <Pressable
+            onPress={() => navigation.navigate('Pause')}
+            style={styles.pauseButton}
+          >
+            <Image
+              source={require('../assets/img/PAUSA.png')}
+              style={styles.pauseImage}
+              resizeMode="contain"
+            />
+          </Pressable>
 
           <Text style={styles.title}>
             Une las figuras iguales
@@ -379,5 +394,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 12,
     fontWeight: '700',
+  },
+
+  pauseButton: {
+    position: 'absolute',
+    top: 12,
+    right: 18,
+    zIndex: 20,
+  },
+
+  pauseImage: {
+    width: 48,
+    height: 48,
   },
 });
