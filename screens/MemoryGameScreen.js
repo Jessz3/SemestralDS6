@@ -98,7 +98,7 @@ export default function MemoryGameScreen({ navigation }) {
 
       setSelected([]);
       setLocked(false);
-    }, isMatch ? 450 : 900);
+    }, isMatch ? 300 : 600);
 
     return () => clearTimeout(timeout);
   }, [selected, cards]);
@@ -189,11 +189,12 @@ const styles = StyleSheet.create({
   },
 
   grid: {
-    width: 350,
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     marginTop: 30,
+    rowGap: 15,
   },
 
   help: {

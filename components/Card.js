@@ -1,7 +1,36 @@
-import { Image, Pressable, StyleSheet } from 'react-native';
+import { useEffect, useRef } from 'react';
+import {
+  Animated,
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 export default function Card({ card, onPress, disabled }) {
   const visible = card.flipped || card.matched;
+
+  const rotate = useRef(
+    new Animated.Value(0)
+  ).current;
+
+  useEffect(() => {
+    Animated.timing(rotate, {
+      toValue: visible ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [visible]);
+
+  const backRotate = rotate.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  });
+
+  const frontRotate = rotate.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['180deg', '360deg'],
+  });
 
   return (
     <Pressable
@@ -12,15 +41,38 @@ export default function Card({ card, onPress, disabled }) {
         pressed && !visible && styles.pressed,
       ]}
     >
-      <Image
-        source={
-          visible
-            ? card.image
-            : require('../assets/img/CARTA_ATRAS.png')
-        }
-        style={styles.cardImage}
-        resizeMode="contain"
-      />
+      {/* PARTE TRASERA */}
+      <Animated.View
+        style={[
+          styles.face,
+          {
+            transform: [{ rotateY: backRotate }],
+          },
+        ]}
+      >
+        <Image
+          source={require('../assets/img/CARTA_ATRAS.png')}
+          style={styles.cardImage}
+          resizeMode="contain"
+        />
+      </Animated.View>
+
+      {/* PARTE DELANTERA */}
+      <Animated.View
+        style={[
+          styles.face,
+          styles.front,
+          {
+            transform: [{ rotateY: frontRotate }],
+          },
+        ]}
+      >
+        <Image
+          source={card.image}
+          style={styles.cardImage}
+          resizeMode="contain"
+        />
+      </Animated.View>
     </Pressable>
   );
 }
@@ -34,6 +86,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  face: {
+    position: 'absolute',
+    width: 120,
+    height: 135,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backfaceVisibility: 'hidden',
+  },
+
+  front: {
+    zIndex: 1,
+  },
+
   cardImage: {
     width: 180,
     height: 180,
@@ -44,4 +109,3 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.96 }],
   },
 });
-
