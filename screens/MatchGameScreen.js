@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import {
   Image,
-  Pressable,
   ImageBackground,
   PanResponder,
   StyleSheet,
@@ -12,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Line } from 'react-native-svg';
 
+import Header from '../components/Header';
 import { matchPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
 
@@ -220,20 +220,12 @@ export default function MatchGameScreen({ navigation }) {
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
-          <Pressable
-            onPress={() => navigation.navigate('Pause')}
-            style={styles.pauseButton}
-          >
-            <Image
-              source={require('../assets/img/PAUSA.png')}
-              style={styles.pauseImage}
-              resizeMode="contain"
+            <Header
+              title="Une las figuras iguales"
+              onPause={() => navigation.navigate('Pause')}
+              containerStyle={styles.header}
+              titleStyle={styles.title}
             />
-          </Pressable>
-
-          <Text style={styles.title}>
-            Une las figuras iguales
-          </Text>
 
           <View
             ref={boardRef}
@@ -339,11 +331,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 
+  header: {
+    marginTop: 4,
+  },
+
   title: {
     fontSize: 30,
     fontWeight: '900',
     color: '#0b0b0b',
-    textAlign: 'center',
   },
 
   board: {
@@ -395,18 +390,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 12,
     fontWeight: '700',
-  },
-
-  pauseButton: {
-    position: 'absolute',
-    top: 12,
-    right: 18,
-    zIndex: 20,
-  },
-
-  pauseImage: {
-    width: 48,
-    height: 48,
   },
 
   overlay: {

@@ -126,12 +126,11 @@ const styles = StyleSheet.create({
 
   title: {
     position: 'absolute',
-    top: 35,
-    fontSize: 75,
-    fontWeight: '900',
+    top: 45,
+    fontSize: 65,
     color: '#FF8C00',
     fontFamily: 'Comic Sans MS',
-    textShadowColor: '#000000',
+    textShadowColor: '#FFFFFF',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
   },
@@ -163,9 +162,8 @@ const styles = StyleSheet.create({
     top: 80,
     left: 25,
     width: 180,
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#000000',
+    fontSize: 15,
+    color: '#FF8C00',
     textAlign: 'center',
     fontFamily: 'Comic Sans MS',
   },
@@ -186,8 +184,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     fontSize: 21,
     textAlign: 'center',
-
     fontFamily: 'Comic Sans MS',
+    color: '#FF8C00',
   },
 
   startButton: {

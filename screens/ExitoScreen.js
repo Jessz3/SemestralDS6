@@ -28,7 +28,7 @@ export default function SuccessScreen({ navigation, route }) {
                 resizeMode="contain"
               />
               <Image
-                source={require('../assets/img/ESTRELLA.png')}
+                source={require('../assets/img/FELIZ_Figuralicia.png')}
                 style={[styles.star, styles.starCenter]}
                 resizeMode="contain"
               />
@@ -56,8 +56,8 @@ export default function SuccessScreen({ navigation, route }) {
               ]}
             >
               <Image
-                source={require('../assets/img/TRIANGULO.png')}
-                style={[styles.button, styles.rotatedButton]}
+                source={require('../assets/img/CONTINUAR.png')}
+                style={styles.button}
                 resizeMode="contain"
               />
             </Pressable>

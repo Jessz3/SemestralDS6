@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Alert,
-  Image,
   ImageBackground,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -12,6 +10,7 @@ import {
 
 import { Audio } from 'expo-av';
 
+import Header from '../components/Header';
 import { audioRounds, figures } from '../utils/gameData';
 
 export default function AudioGameScreen({ navigation }) {
@@ -85,20 +84,12 @@ export default function AudioGameScreen({ navigation }) {
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
-          <Pressable
-            onPress={() => navigation.navigate('Pause')}
-            style={styles.pauseButton}
-          >
-            <Image
-              source={require('../assets/img/PAUSA.png')}
-              style={styles.pauseImage}
-              resizeMode="contain"
+            <Header
+              title="¿Qué figura escuchas?"
+              onPause={() => navigation.navigate('Pause')}
+              containerStyle={styles.header}
+              titleStyle={styles.title}
             />
-          </Pressable>
-
-          <Text style={styles.title}>
-            ¿Qué figura escuchas?
-          </Text>
 
           <Text style={styles.progress}>
             Ronda {roundIndex + 1}/{audioRounds.length}
@@ -170,12 +161,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
+  header: {
+    marginTop: 8,
+  },
+
   title: {
     fontSize: 30,
     fontWeight: '900',
     color: '#0f0f0f',
-    marginTop: 25,
-    textAlign: 'center',
   },
 
   progress: {
@@ -230,18 +223,6 @@ const styles = StyleSheet.create({
 
   correct: {
     color: '#2E7D32',
-  },
-
-  pauseButton: {
-    position: 'absolute',
-    top: 12,
-    right: 18,
-    zIndex: 20,
-  },
-
-  pauseImage: {
-    width: 48,
-    height: 48,
   },
 
   overlay: {

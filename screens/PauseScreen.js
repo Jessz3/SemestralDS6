@@ -28,20 +28,6 @@ export default function PauseScreen({ navigation }) {
             <View style={styles.buttonsRow}>
 
               <Pressable
-                onPress={() => navigation.goBack()}
-                style={({ pressed }) => [
-                  styles.buttonContainer,
-                  pressed && styles.pressed
-                ]}
-              >
-                <Image
-                  source={require('../assets/img/TRIANGULO.png')}
-                  style={[styles.button, styles.rotatedButton]}
-                  resizeMode="contain"
-                />
-              </Pressable>
-
-              <Pressable
                 onPress={() => navigation.replace('Home')}
                 style={({ pressed }) => [
                   styles.buttonContainer,
@@ -50,7 +36,21 @@ export default function PauseScreen({ navigation }) {
               >
                 <Image
                   source={require('../assets/img/SALIR.png')}
-                  style={[styles.button, styles.exitButton]}
+                  style={styles.button}
+                  resizeMode="contain"
+                />
+              </Pressable>
+
+              <Pressable
+                onPress={() => navigation.goBack()}
+                style={({ pressed }) => [
+                  styles.buttonContainer,
+                  pressed && styles.pressed
+                ]}
+              >
+                <Image
+                  source={require('../assets/img/CONTINUAR.png')}
+                  style={styles.button}
                   resizeMode="contain"
                 />
               </Pressable>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: '900',
     color: '#FFD400',
-    textShadowColor: '#000',
+    textShadowColor: '#FFF',
     textShadowOffset: {
       width: 2,
       height: 2,
@@ -145,10 +145,6 @@ const styles = StyleSheet.create({
     height: 90,
   },
 
-  rotatedButton: {
-    transform: [{ rotate: '90deg' }],
-  },
-
   pressed: {
     transform: [
       {
@@ -177,10 +173,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD400',
     borderRadius: 5,
     marginHorizontal: 10,
-  },
-
-  exitButton: {
-    opacity: 0.9,
   },
 
 });

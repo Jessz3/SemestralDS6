@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Image,
-  Pressable,
   ImageBackground,
   SafeAreaView,
   StyleSheet,
@@ -10,6 +8,7 @@ import {
 } from 'react-native';
 
 import Card from '../components/Card';
+import Header from '../components/Header';
 import { memoryPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
 
@@ -134,20 +133,12 @@ export default function MemoryGameScreen({ navigation }) {
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
-          <Pressable
-            onPress={() => navigation.navigate('Pause')}
-            style={styles.pauseButton}
-          >
-            <Image
-              source={require('../assets/img/PAUSA.png')}
-              style={styles.pauseImage}
-              resizeMode="contain"
+            <Header
+              title="Encuentra los pares"
+              onPause={() => navigation.navigate('Pause')}
+              containerStyle={styles.header}
+              titleStyle={styles.title}
             />
-          </Pressable>
-
-          <Text style={styles.title}>
-            Encuentra los pares
-          </Text>
 
           <Text style={styles.progress}>
             Pares encontrados: {matchedPairs}/3
@@ -165,7 +156,7 @@ export default function MemoryGameScreen({ navigation }) {
           </View>
 
           <Text style={styles.help}>
-            Toca dos cartas iguales.
+            Toca dos cartas iguales y emparéjalas
           </Text>
 
         </View>
@@ -187,14 +178,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 16,
+    top: 20,
+  },
+
+  header: {
+    marginTop: 12,
   },
 
   title: {
-    marginTop: 35,
-    fontSize: 38,
-    fontWeight: '900',
+    fontSize: 30,
     color: '#FF8C00',
-    textAlign: 'center'
+    fontFamily: 'Comic Sans MS',
+    textShadowColor: '#FFFFFF',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
 
   progress: {
@@ -216,22 +213,10 @@ const styles = StyleSheet.create({
 
   help: {
     marginTop: 20,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '700',
-    color: '#000000',
+    color: '#fcff50',
     textAlign: 'center',
-  },
-
-  pauseButton: {
-    position: 'absolute',
-    top: 12,
-    right: 18,
-    zIndex: 20,
-  },
-
-  pauseImage: {
-    width: 48,
-    height: 48,
   },
 
   overlay: {
