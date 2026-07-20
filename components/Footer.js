@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
 
 	helpText: {
 		fontSize: 15,
-		fontWeight: '700',
+		fontFamily: 'Comic Sans MS',
 		color: '#FBAB20',
 		textAlign: 'center',
 	},

@@ -261,19 +261,13 @@ const styles = StyleSheet.create({
 
   confirmTitle: {
     fontSize: 32,
-    fontWeight: '900',
+    fontFamily: 'Comic Sans MS',
     color: '#9D1117',
-    textShadowColor: '#FFF',
-    textShadowOffset: {
-      width: 2,
-      height: 2,
-    },
-    textShadowRadius: 2,
   },
 
   confirmMessage: {
     fontSize: 17,
-    fontWeight: '600',
+    fontFamily: 'Comic Sans MS',
     color: '#333',
     textAlign: 'center',
     marginTop: 10,

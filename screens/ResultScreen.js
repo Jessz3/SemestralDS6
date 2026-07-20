@@ -9,17 +9,23 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getGameSession, saveResult } from '../storage/storage';
-import Colors from '../styles/colors';
+import { getGameSession, getHistory, saveResult } from '../storage/storage';
 import { formatDuration } from '../utils/timer';
 
 export default function ResultScreen({ navigation }) {
   const [result, setResult] = useState(null);
+  const [isRecord, setIsRecord] = useState(false);
 
   useEffect(() => {
     const finishGame = async () => {
       const session = await getGameSession();
       const elapsedMs = Date.now() - session.startTime;
+
+      const previousHistory = await getHistory();
+      const previousBestMs = previousHistory.length
+        ? Math.min(...previousHistory.map((item) => item.elapsedMs))
+        : null;
+
       const newResult = {
         id: String(Date.now()),
         name: session.name,
@@ -27,8 +33,13 @@ export default function ResultScreen({ navigation }) {
         time: formatDuration(elapsedMs),
         date: new Date().toISOString(),
       };
+
       await saveResult(newResult);
+
       setResult(newResult);
+      setIsRecord(
+        previousBestMs !== null && elapsedMs < previousBestMs
+      );
     };
 
     finishGame().catch(() => {
@@ -53,7 +64,7 @@ export default function ResultScreen({ navigation }) {
       >
         <SafeAreaView style={styles.safe} edges={['bottom']}>
           <View style={styles.container}>
-            <ActivityIndicator size="large" color={Colors.primary} />
+            <ActivityIndicator size="large" />
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -68,15 +79,23 @@ export default function ResultScreen({ navigation }) {
     >
       <SafeAreaView style={styles.safe} edges={['bottom']}>
         <View style={styles.container}>
+
           <Text style={styles.title}>¡ENHORABUENA!</Text>
 
-          <View style={styles.clockContainer}>
-            <Image
-              source={require('../assets/img/RELOJ.png')}
-              style={styles.clockImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.time}>{result.time}</Text>
+          <Image
+            source={require('../assets/img/RELOJ.png')}
+            style={styles.clockImage}
+            resizeMode="contain"
+          />
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardLabel}>
+              {isRecord ? '¡Nuevo récord!' : '¡Lo lograste!'}
+            </Text>
+
+            <Text style={styles.time}>
+              {result.time}
+            </Text>
           </View>
 
           <View style={styles.actions}>
@@ -124,41 +143,54 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginTop: 28,
-    fontSize: 42,
-    fontWeight: '900',
+    width: '100%',
+    marginTop: 45,
+    fontSize: 40,
     color: '#FBAB20',
+    fontFamily: 'Comic Sans MS',
     textAlign: 'center',
     textShadowColor: '#FFFFFF',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
   },
 
-  clockContainer: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+  clockImage: {
+    width: 180,
+    height: 180,
+    marginTop: 10,
   },
 
-  clockImage: {
-    width: 240,
-    height: 240,
+  infoCard: {
+    width: '80%',
+    backgroundColor: 'rgba(255,255,255,0.78)',
+    borderRadius: 30,
+    paddingVertical: 22,
+    paddingHorizontal: 25,
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#FBAB20',
+    marginTop: 10,
+  },
+
+  cardLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
   },
 
   time: {
-    position: 'absolute',
-    fontSize: 38,
-    fontWeight: '900',
-    color: Colors.primary,
-    textAlign: 'center',
+    marginTop: 6,
+    fontSize: 36,
+    fontFamily: 'Comic Sans MS',
+    color: '#FBAB20',
   },
 
   actions: {
+    marginTop: 'auto',
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     paddingBottom: 18,
   },
 
@@ -168,8 +200,8 @@ const styles = StyleSheet.create({
   },
 
   buttonImage: {
-    width: 170,
-    height: 170,
+    width: 130,
+    height: 130,
   },
 
   pressed: {
