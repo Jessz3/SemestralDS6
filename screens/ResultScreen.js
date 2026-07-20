@@ -38,10 +38,10 @@ export default function ResultScreen({ navigation }) {
       const previousHistory = await getHistory();
 
       const previousBestMs = previousHistory.length
-        ? Math.min(
-            ...previousHistory.map((item) => item.elapsedMs)
-          )
-        : null;
+      ? Math.min(
+          ...previousHistory.map((item) => item.elapsedMs)
+        )
+      : null;
 
       const newResult = {
         id: String(Date.now()),
@@ -76,15 +76,13 @@ export default function ResultScreen({ navigation }) {
 
       const savedHistory = await getHistory();
 
-      // Menor tiempo primero
-      const topTenScores = [...savedHistory]
+      const sortedHistory = [...savedHistory]
         .sort((a, b) => a.elapsedMs - b.elapsedMs)
         .slice(0, 10);
 
-      setHistory(topTenScores);
-
       setHistory(sortedHistory);
-    } catch {
+    } catch (error) {
+      console.log('Error cargando puntajes:', error);
       setHistory([]);
     } finally {
       setLoadingScores(false);
@@ -341,7 +339,7 @@ const styles = StyleSheet.create({
 
   title: {
     width: '100%',
-    marginTop: 35,
+    marginTop: 80,
     fontSize: 40,
     color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
@@ -373,7 +371,7 @@ const styles = StyleSheet.create({
   },
 
   cardLabel: {
-    fontSize: 18,
+    fontSize: 30,
     fontFamily: 'Comic Sans MS',
     color: '#FBAB20',
   },
