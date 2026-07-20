@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
@@ -12,12 +12,31 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { Audio } from 'expo-av';
 
 import { startGame } from '../storage/storage';
 
 export default function HomeScreen({ navigation }) {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+
+    const playWelcomeAudio = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../assets/audio/Bienvenido.mp3')
+      );
+
+      await sound.playAsync();
+
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+    } catch {
+      console.log('No se pudo reproducir el audio');
+    }
+  };
 
   const handleStart = async () => {
     const cleanName = name.trim();
@@ -56,6 +75,12 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.title}>
             FIGÚRALO
           </Text>
+
+          {/* BOTÓN INVISIBLE DE AUDIO */}
+          <Pressable
+            onPress={playWelcomeAudio}
+            style={styles.audioHotspot}
+          />
 
           {/* INPUT */}
           <View style={styles.inputContainer}>
@@ -143,5 +168,14 @@ const styles = StyleSheet.create({
   buttonImage: {
     width: 250,
     height: 250,
+  },
+
+    audioHotspot: {
+    position: 'absolute',
+    right: 15,
+    bottom: 550,
+    width: 230,
+    height: 100,
+    opacity: 100,
   },
 });
