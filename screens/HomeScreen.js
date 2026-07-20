@@ -42,7 +42,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/img/FONDO_BONITO.png')}
+      source={require('../assets/img/Main_Screen.png')}
       style={styles.background}
       resizeMode="cover"
     >
@@ -56,27 +56,6 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.title}>
             FIGÚRALO
           </Text>
-
-          {/* IMAGEN DE LA IZQUIERDA */}
-          <Image
-            source={require('../assets/img/FIGURALICIA_CUERPO.png')}
-            style={styles.leftImage}
-            resizeMode="contain"
-          />
-
-          {/* PERSONAJE Y TEXTO DE LA DERECHA */}
-          <View style={styles.characterContainer}>
-            <Image
-              source={require('../assets/img/NUBE.png')}
-              style={styles.rightImage}
-              resizeMode="contain"
-            />
-
-            <Text style={styles.characterText}>
-              ¡Hola! Me llamo Figuralicia.{'\n'}
-              ¿Tú cómo te llamas?
-            </Text>
-          </View>
 
           {/* INPUT */}
           <View style={styles.inputContainer}>
@@ -131,47 +110,14 @@ const styles = StyleSheet.create({
     color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
     textShadowColor: '#8e3410',
-    textShadowOffset: { width: 2, height: 2 },
+    textShadowOffset: { width: 3, height: 2 },
     textShadowRadius: 1,
-  },
-
-  leftImage: {
-    position: 'absolute',
-    left: -160,
-    top: 180,
-    width: 600,
-    height: 600,
-  },
-
-  characterContainer: {
-    position: 'absolute',
-    right: 15,
-    top: 120,
-    width: 210,
-    height: 230,
-    alignItems: 'center',
-  },
-
-  rightImage: {
-    width: 230,
-    height: 230,
-  },
-
-  characterText: {
-    position: 'absolute',
-    top: 80,
-    left: 25,
-    width: 180,
-    fontSize: 15,
-    color: '#FBAB20',
-    textAlign: 'center',
-    fontFamily: 'Comic Sans MS',
   },
 
   inputContainer: {
     position: 'absolute',
     right: 15,
-    bottom: 300,
+    bottom: 370,
   },
 
   input: {
