@@ -43,14 +43,14 @@ const styles = StyleSheet.create({
 	},
 
 	pauseButton: {
-		width: 48,
-		height: 48,
+		width: 50,
+		height: 50,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 
 	pauseImage: {
-		width: 48,
-		height: 48,
+		width: 60,
+		height: 60,
 	},
 });

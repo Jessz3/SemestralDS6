@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import Card from '../components/Card';
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { memoryPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
@@ -134,15 +135,11 @@ export default function MemoryGameScreen({ navigation }) {
         <View style={styles.container}>
 
             <Header
-              title="Encuentra los pares"
+              title="¡Encuentra los pares!"
               onPause={() => navigation.navigate('Pause')}
               containerStyle={styles.header}
               titleStyle={styles.title}
             />
-
-          <Text style={styles.progress}>
-            Pares encontrados: {matchedPairs}/3
-          </Text>
 
           <View style={styles.grid}>
             {cards.map((card) => (
@@ -155,9 +152,10 @@ export default function MemoryGameScreen({ navigation }) {
             ))}
           </View>
 
-          <Text style={styles.help}>
-            Toca dos cartas iguales y emparéjalas
-          </Text>
+          <Footer
+            helpText="¡Toca dos cartas para voltearlas!"
+            containerStyle={styles.footer}
+          />
 
         </View>
       </SafeAreaView>
@@ -186,8 +184,8 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 30,
-    color: '#FF8C00',
+    fontSize: 28,
+    color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
     textShadowColor: '#FFFFFF',
     textShadowOffset: { width: 2, height: 2 },
@@ -211,12 +209,9 @@ const styles = StyleSheet.create({
     rowGap: 15,
   },
 
-  help: {
-    marginTop: 20,
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#fcff50',
-    textAlign: 'center',
+  footer: {
+    marginTop: 'auto',
+    paddingTop: 20,
   },
 
   overlay: {

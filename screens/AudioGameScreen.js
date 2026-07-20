@@ -1,25 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
+  Image,
   ImageBackground,
-  SafeAreaView,
+  Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Audio } from 'expo-av';
 
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { audioRounds, figures } from '../utils/gameData';
+import shuffle from '../utils/shuffle';
 
 export default function AudioGameScreen({ navigation }) {
+  const rounds = useMemo(() => shuffle(audioRounds), []);
+
   const [roundIndex, setRoundIndex] = useState(0);
   const [sound, setSound] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [locked, setLocked] = useState(false);
 
-  const current = audioRounds[roundIndex];
+  const current = rounds[roundIndex];
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -61,7 +67,7 @@ export default function AudioGameScreen({ navigation }) {
       setLocked(true);
 
       setTimeout(() => {
-        if (roundIndex === audioRounds.length - 1) {
+        if (roundIndex === rounds.length - 1) {
           navigation.replace('Result');
         } else {
           setRoundIndex((value) => value + 1);
@@ -91,53 +97,52 @@ export default function AudioGameScreen({ navigation }) {
               titleStyle={styles.title}
             />
 
-          <Text style={styles.progress}>
-            Ronda {roundIndex + 1}/{audioRounds.length}
-          </Text>
+          <View style={styles.content}>
 
-          <View style={styles.options}>
-            {figures.map((item) => (
-              <Pressable
-                key={item.id}
-                onPress={() => selectFigure(item)}
-                disabled={locked}
-                style={({ pressed }) => [
-                  styles.option,
-                  pressed && styles.pressed,
-                ]}
-              >
-                <Image
-                  source={item.image}
-                  style={styles.figureImage}
-                  resizeMode="contain"
-                />
-              </Pressable>
-            ))}
+            <View style={styles.options}>
+              {figures.map((item) => (
+                <Pressable
+                  key={item.id}
+                  onPress={() => selectFigure(item)}
+                  disabled={locked}
+                  style={({ pressed }) => [
+                    styles.option,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Image
+                    source={item.image}
+                    style={styles.figureImage}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+              ))}
+            </View>
+
+            <Pressable
+              onPress={playAudio}
+              style={({ pressed }) => [
+                styles.audioButton,
+                pressed && styles.pressed,
+              ]}
+            >
+              <Image
+                source={require('../assets/img/AUDIO.png')}
+                style={styles.audioButtonImage}
+                resizeMode="contain"
+              />
+            </Pressable>
+
           </View>
 
-          <Pressable
-            onPress={playAudio}
-            style={({ pressed }) => [
-              styles.audioButton,
-              pressed && styles.pressed,
-            ]}
-          >
-            <Image
-              source={require('../assets/img/AUDIO.png')}
-              style={styles.audioButtonImage}
-              resizeMode="contain"
-            />
-          </Pressable>
-
-          <Text
-            style={[
-              styles.feedback,
-              feedback.startsWith('¡Correcto') &&
-                styles.correct,
-            ]}
-          >
-            {feedback || 'Escucha el audio y toca una figura.'}
+          <Text style={styles.progress}>
+            {roundIndex}/{rounds.length}
           </Text>
+
+          <Footer
+            helpText="¡Toca el parlante y elige la figura que corresponde!"
+            containerStyle={styles.footer}
+          />
 
         </View>
       </SafeAreaView>
@@ -157,7 +162,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
   },
 
@@ -166,25 +170,35 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 30,
-    fontWeight: '900',
-    color: '#0f0f0f',
+    fontSize: 26,
+    color: '#FBAB20',
+    fontFamily: 'Comic Sans MS',
+    textShadowColor: '#FFFFFF',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+  },
+
+  content: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   progress: {
-    fontSize: 18,
-    color: '#000000',
-    marginTop: 8,
-    fontWeight: '700',
+    fontSize: 20,
+    color: '#FBAB20',
+    fontFamily: 'Comic Sans MS',
+    marginTop: 4,
   },
 
   audioButton: {
-    marginTop: -25,
+    marginTop: 35,
   },
 
   audioButtonImage: {
-    width: 220,
-    height: 220,
+    width: 170,
+    height: 170,
   },
 
   options: {
@@ -214,7 +228,7 @@ const styles = StyleSheet.create({
   },
 
   feedback: {
-    marginTop: 12,
+    marginTop: 4,
     fontSize: 19,
     fontWeight: '700',
     color: '#D32F2F',
@@ -225,9 +239,13 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
   },
 
+  footer: {
+    marginTop: 'auto',
+    paddingTop: 20,
+  },
+
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(255,255,255,0.70)',
   },
 });
-

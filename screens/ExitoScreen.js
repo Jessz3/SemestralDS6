@@ -5,7 +5,6 @@ export default function SuccessScreen({ navigation, route }) {
 
   const {
     nextScreen = 'Home',
-    gameName = 'este juego',
   } = route.params || {};
 
   return (
@@ -28,7 +27,7 @@ export default function SuccessScreen({ navigation, route }) {
                 resizeMode="contain"
               />
               <Image
-                source={require('../assets/img/FELIZ_Figuralicia.png')}
+                source={require('../assets/img/EMOCIONADA_Figuralicia.png')}
                 style={[styles.star, styles.starCenter]}
                 resizeMode="contain"
               />
@@ -39,14 +38,11 @@ export default function SuccessScreen({ navigation, route }) {
               />
             </View>
 
-
-            <Text style={styles.title}>
-              ¡MUY BIEN!
-            </Text>
-
-            <Text style={styles.message}>
-              Has completado {gameName}.
-            </Text>
+            <Image
+              source={require('../assets/img/BOTON_EXITO.png')}
+              style={styles.titleImg}
+              resizeMode="contain"
+            />
 
             <Pressable
               onPress={() => navigation.replace(nextScreen)}
@@ -110,20 +106,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     borderWidth: 3,
-    borderColor: '#FFFFFF',
+    borderColor: '#FBAB20',
   },
 
-  title: {
-    fontSize: 42,
-    fontWeight: '900',
-    color: '#FFD400',
-
-    textShadowColor: '#000',
-    textShadowOffset: {
-      width: 2,
-      height: 2,
-    },
-    textShadowRadius: 2,
+  titleImg: {
+    width: 250,
+    height: 120,
   },
 
   subtitle: {
@@ -147,8 +135,8 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    width: 90,
-    height: 90,
+    width: 100,
+    height: 100,
   },
 
   rotatedButton: {
@@ -185,8 +173,8 @@ const styles = StyleSheet.create({
   },
 
   starCenter: {
-    width: 90,
-    height: 90,
+    width: 95,
+    height: 95,
     marginBottom: 14,
   },
 

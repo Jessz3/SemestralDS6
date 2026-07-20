@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Line } from 'react-native-svg';
 
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { matchPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
@@ -110,6 +111,10 @@ export default function MatchGameScreen({ navigation }) {
         const end =
           positions.current.right[rightId];
 
+        const sourceItem = leftItems.find(
+          (item) => item.id === leftId
+        );
+
         const next = [
           ...connections,
           {
@@ -118,6 +123,7 @@ export default function MatchGameScreen({ navigation }) {
             y1: start.centerY,
             x2: end.centerX,
             y2: end.centerY,
+            color: sourceItem?.color || '#000000',
           },
         ];
 
@@ -151,6 +157,10 @@ export default function MatchGameScreen({ navigation }) {
         const start =
           positions.current.left[id];
 
+        const sourceItem = leftItems.find(
+          (item) => item.id === id
+        );
+
         if (start) {
           setDragLine({
             id,
@@ -158,6 +168,7 @@ export default function MatchGameScreen({ navigation }) {
             y1: start.centerY,
             x2: start.centerX,
             y2: start.centerY,
+            color: sourceItem?.color || '#000000',
           });
         }
       },
@@ -174,6 +185,10 @@ export default function MatchGameScreen({ navigation }) {
         const start =
           positions.current.left[id];
 
+        const sourceItem = leftItems.find(
+          (item) => item.id === id
+        );
+
         if (start) {
           setDragLine({
             id,
@@ -181,6 +196,7 @@ export default function MatchGameScreen({ navigation }) {
             y1: start.centerY,
             x2: x,
             y2: y,
+            color: sourceItem?.color || '#000000',
           });
         }
       },
@@ -221,7 +237,7 @@ export default function MatchGameScreen({ navigation }) {
         <View style={styles.container}>
 
             <Header
-              title="Une las figuras iguales"
+            title="¡Une las figuras!"
               onPause={() => navigation.navigate('Pause')}
               containerStyle={styles.header}
               titleStyle={styles.title}
@@ -242,7 +258,7 @@ export default function MatchGameScreen({ navigation }) {
                 <Line
                   key={line.id}
                   {...line}
-                  stroke="#000000"
+                  stroke={line.color}
                   strokeWidth="7"
                   strokeLinecap="round"
                 />
@@ -251,7 +267,7 @@ export default function MatchGameScreen({ navigation }) {
               {dragLine && (
                 <Line
                   {...dragLine}
-                  stroke="#040404"
+                  stroke={dragLine.color}
                   strokeWidth="6"
                   strokeLinecap="round"
                 />
@@ -259,7 +275,7 @@ export default function MatchGameScreen({ navigation }) {
             </Svg>
 
             {/* FIGURAS IZQUIERDA */}
-            <View style={styles.column, styles.leftColumn}>
+            <View style={[styles.column, styles.leftColumn]}>
               {leftItems.map((item) => (
                 <View
                   key={item.id}
@@ -282,7 +298,7 @@ export default function MatchGameScreen({ navigation }) {
             </View>
 
             {/* FIGURAS DERECHA */}
-            <View style={styles.column, styles.rightColumn}>
+            <View style={[styles.column, styles.rightColumn]}>
               {rightItems.map((item) => (
                 <View
                   key={item.id}
@@ -305,9 +321,10 @@ export default function MatchGameScreen({ navigation }) {
 
           </View>
 
-          <Text style={styles.progress}>
-            Conexiones: {connections.length}/{leftItems.length}
-          </Text>
+          <Footer
+            helpText="¡Arrastra cada figura de la izquierda hasta su pareja!"
+            containerStyle={styles.footer}
+          />
 
         </View>
       </SafeAreaView>
@@ -337,8 +354,11 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 30,
-    fontWeight: '900',
-    color: '#0b0b0b',
+    color: '#FBAB20',
+    fontFamily: 'Comic Sans MS',
+    textShadowColor: '#FFFFFF',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
 
   board: {
@@ -390,6 +410,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 12,
     fontWeight: '700',
+  },
+
+  footer: {
+    marginTop: 'auto',
+    paddingTop: 20,
   },
 
   overlay: {

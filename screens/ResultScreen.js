@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
     fontSize: 42,
     fontWeight: '900',
-    color: '#FF8C00',
+    color: '#FBAB20',
     textAlign: 'center',
     textShadowColor: '#FFFFFF',
     textShadowOffset: { width: 2, height: 2 },
