@@ -173,9 +173,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
-    textShadowColor: '#FFFFFF',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 1,
   },
 
   content: {

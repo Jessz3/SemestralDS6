@@ -187,9 +187,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
-    textShadowColor: '#FFFFFF',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 1,
   },
 
   progress: {

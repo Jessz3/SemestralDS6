@@ -1,10 +1,27 @@
 import { useState } from 'react';
-import { Image, ImageBackground, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  ImageBackground,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PauseScreen({ navigation }) {
-
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const [isAngry, setIsAngry] = useState(false);
+
+  const openExitConfirmation = () => {
+    // 10 % de probabilidad de mostrar a Figuralicia enojada.
+    // En el otro 90 % se mostrará triste.
+    const showAngryFiguralicia = Math.random() < 0.1;
+
+    setIsAngry(showAngryFiguralicia);
+    setConfirmVisible(true);
+  };
 
   const handleExit = () => {
     setConfirmVisible(false);
@@ -12,19 +29,14 @@ export default function PauseScreen({ navigation }) {
   };
 
   return (
-
     <ImageBackground
       source={require('../assets/img/FONDO_PLANO.png')}
       style={styles.background}
       resizeMode="cover"
     >
-
       <SafeAreaView style={styles.safe}>
-
         <View style={styles.container}>
-
           <View style={styles.infoCard}>
-
             <Image
               source={require('../assets/img/BOTON_PAUSA.png')}
               style={styles.titleImg}
@@ -32,12 +44,11 @@ export default function PauseScreen({ navigation }) {
             />
 
             <View style={styles.buttonsRow}>
-
               <Pressable
-                onPress={() => setConfirmVisible(true)}
+                onPress={openExitConfirmation}
                 style={({ pressed }) => [
                   styles.buttonContainer,
-                  pressed && styles.pressed
+                  pressed && styles.pressed,
                 ]}
               >
                 <Image
@@ -51,7 +62,7 @@ export default function PauseScreen({ navigation }) {
                 onPress={() => navigation.goBack()}
                 style={({ pressed }) => [
                   styles.buttonContainer,
-                  pressed && styles.pressed
+                  pressed && styles.pressed,
                 ]}
               >
                 <Image
@@ -60,9 +71,7 @@ export default function PauseScreen({ navigation }) {
                   resizeMode="contain"
                 />
               </Pressable>
-
             </View>
-
           </View>
 
           <View style={styles.starsDecor}>
@@ -71,16 +80,16 @@ export default function PauseScreen({ navigation }) {
               style={styles.star}
               resizeMode="contain"
             />
+
             <View style={styles.starLine} />
+
             <Image
               source={require('../assets/img/ESTRELLA.png')}
               style={styles.star}
               resizeMode="contain"
             />
           </View>
-
         </View>
-
       </SafeAreaView>
 
       <Modal
@@ -90,11 +99,13 @@ export default function PauseScreen({ navigation }) {
         onRequestClose={() => setConfirmVisible(false)}
       >
         <View style={styles.modalOverlay}>
-
           <View style={styles.confirmCard}>
-
             <Image
-              source={require('../assets/img/ENOJADA_Figuralicia.png')}
+              source={
+                isAngry
+                  ? require('../assets/img/ENOJADA_Figuralicia.png')
+                  : require('../assets/img/TRISTE_Figuralicia.png')
+              }
               style={styles.confirmImage}
               resizeMode="contain"
             />
@@ -108,12 +119,11 @@ export default function PauseScreen({ navigation }) {
             </Text>
 
             <View style={styles.buttonsRow}>
-
               <Pressable
                 onPress={() => setConfirmVisible(false)}
                 style={({ pressed }) => [
                   styles.buttonContainer,
-                  pressed && styles.pressed
+                  pressed && styles.pressed,
                 ]}
               >
                 <Image
@@ -127,7 +137,7 @@ export default function PauseScreen({ navigation }) {
                 onPress={handleExit}
                 style={({ pressed }) => [
                   styles.buttonContainer,
-                  pressed && styles.pressed
+                  pressed && styles.pressed,
                 ]}
               >
                 <Image
@@ -136,21 +146,15 @@ export default function PauseScreen({ navigation }) {
                   resizeMode="contain"
                 />
               </Pressable>
-
             </View>
-
           </View>
-
         </View>
       </Modal>
-
     </ImageBackground>
-
   );
 }
 
 const styles = StyleSheet.create({
-
   background: {
     flex: 1,
   },
@@ -208,15 +212,15 @@ const styles = StyleSheet.create({
   pressed: {
     transform: [
       {
-        scale: 0.92
-      }
+        scale: 0.92,
+      },
     ],
     opacity: 0.8,
   },
 
   starsDecor: {
     position: 'absolute',
-    bottom: 35, 
+    bottom: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -273,5 +277,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 22,
   },
-
 });
