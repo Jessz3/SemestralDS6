@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { memoryPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
+import { playCorrectSound } from '../utils/soundEffects';
 
 function createDeck() {
   return shuffle(
@@ -74,6 +75,10 @@ export default function MemoryGameScreen({ navigation }) {
     setLocked(true);
 
     const isMatch = first.pairId === second.pairId;
+
+    if (isMatch) {
+      playCorrectSound();
+    }
 
     const timeout = setTimeout(() => {
       setCards((current) =>
@@ -154,6 +159,7 @@ export default function MemoryGameScreen({ navigation }) {
 
           <Footer
             helpText="¡Toca dos cartas para voltearlas!"
+            audioSource={require('../assets/audio/MemoryGame.mp3')}
             containerStyle={styles.footer}
           />
 

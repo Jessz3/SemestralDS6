@@ -15,8 +15,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
+  getElapsedGameTime,
   getGameSession,
   getHistory,
+  restartGame,
   saveResult,
 } from '../storage/storage';
 
@@ -29,44 +31,82 @@ export default function ResultScreen({ navigation }) {
   const [history, setHistory] = useState([]);
   const [scoresVisible, setScoresVisible] = useState(false);
   const [loadingScores, setLoadingScores] = useState(false);
+  const [restarting, setRestarting] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const finishGame = async () => {
-      const session = await getGameSession();
-      const elapsedMs = Date.now() - session.startTime;
+      try {
+        const session = await getGameSession();
 
-      const previousHistory = await getHistory();
+        /*
+         * Calcula el tiempo real de juego y descuenta
+         * todo el tiempo acumulado en pausa.
+         */
+        const elapsedMs = await getElapsedGameTime();
 
-      const previousBestMs = previousHistory.length
-      ? Math.min(
-          ...previousHistory.map((item) => item.elapsedMs)
-        )
-      : null;
+        const previousHistory = await getHistory();
 
-      const newResult = {
-        id: String(Date.now()),
-        name: session.name,
-        elapsedMs,
-        time: formatDuration(elapsedMs),
-        date: new Date().toISOString(),
-      };
+        /*
+         * Se determina el récord antes de guardar
+         * el resultado actual.
+         */
+        const validPreviousTimes = previousHistory
+          .map((item) => Number(item.elapsedMs))
+          .filter((time) => Number.isFinite(time));
 
-      await saveResult(newResult);
+        const previousBestMs =
+          validPreviousTimes.length > 0
+            ? Math.min(...validPreviousTimes)
+            : null;
 
-      setResult(newResult);
+        const newResult = {
+          id: String(Date.now()),
+          name: session.name?.trim() || 'Jugador',
+          elapsedMs,
+          time: formatDuration(elapsedMs),
+          date: new Date().toISOString(),
+        };
 
-      setIsRecord(
-        previousBestMs === null ||
-        elapsedMs < previousBestMs
-      );
+        await saveResult(newResult);
+
+        if (!isMounted) {
+          return;
+        }
+
+        setResult(newResult);
+
+        setIsRecord(
+          previousBestMs === null ||
+          elapsedMs < previousBestMs
+        );
+      } catch (error) {
+        console.log(
+          'No se pudo guardar el resultado:',
+          error
+        );
+
+        if (!isMounted) {
+          return;
+        }
+
+        setResult({
+          id: String(Date.now()),
+          name: 'Jugador',
+          elapsedMs: 0,
+          time: '--:--',
+        });
+
+        setIsRecord(false);
+      }
     };
 
-    finishGame().catch(() => {
-      setResult({
-        name: 'Jugador',
-        time: '--:--',
-      });
-    });
+    finishGame();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const showScores = async () => {
@@ -76,24 +116,60 @@ export default function ResultScreen({ navigation }) {
 
       const savedHistory = await getHistory();
 
-      const sortedHistory = [...savedHistory]
-        .sort((a, b) => a.elapsedMs - b.elapsedMs)
+      /*
+       * Ordena desde el menor tiempo hasta el mayor
+       * y conserva solamente los diez mejores.
+       */
+      const topTenScores = [...savedHistory]
+        .filter((item) =>
+          Number.isFinite(Number(item.elapsedMs))
+        )
+        .sort(
+          (a, b) =>
+            Number(a.elapsedMs) -
+            Number(b.elapsedMs)
+        )
         .slice(0, 10);
 
-      setHistory(sortedHistory);
+      setHistory(topTenScores);
     } catch (error) {
-      console.log('Error cargando puntajes:', error);
+      console.log(
+        'No se pudieron cargar los puntajes:',
+        error
+      );
+
       setHistory([]);
     } finally {
       setLoadingScores(false);
     }
   };
 
-  const playAgain = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Memory' }],
-    });
+  const playAgain = async () => {
+    if (restarting) {
+      return;
+    }
+
+    try {
+      setRestarting(true);
+
+      /*
+      * Inicia una sesión completamente nueva,
+      * pero conserva el nombre del jugador.
+      */
+      await restartGame(result.name);
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Memory' }],
+      });
+    } catch (error) {
+      console.log(
+        'No se pudo iniciar una nueva partida:',
+        error
+      );
+
+      setRestarting(false);
+    }
   };
 
   const goHome = () => {
@@ -103,7 +179,15 @@ export default function ResultScreen({ navigation }) {
     });
   };
 
+  const closeScores = () => {
+    setScoresVisible(false);
+  };
+
   const renderScore = ({ item, index }) => {
+    const displayedTime =
+      item.time ||
+      formatDuration(Number(item.elapsedMs) || 0);
+
     return (
       <View style={styles.scoreItem}>
         <View style={styles.scorePosition}>
@@ -116,11 +200,11 @@ export default function ResultScreen({ navigation }) {
           style={styles.scoreName}
           numberOfLines={1}
         >
-          {item.name || 'Jugador'}
+          {item.name?.trim() || 'Jugador'}
         </Text>
 
         <Text style={styles.scoreTime}>
-          {item.time || formatDuration(item.elapsedMs)}
+          {displayedTime}
         </Text>
       </View>
     );
@@ -137,11 +221,15 @@ export default function ResultScreen({ navigation }) {
           style={styles.safe}
           edges={['bottom']}
         >
-          <View style={styles.container}>
+          <View style={styles.loadingScreen}>
             <ActivityIndicator
               size="large"
               color="#FBAB20"
             />
+
+            <Text style={styles.loadingText}>
+              Guardando resultado...
+            </Text>
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -181,7 +269,6 @@ export default function ResultScreen({ navigation }) {
             </Text>
           </View>
 
-          {/* Personaje y botón de puntajes */}
           <View style={styles.scoresSection}>
             <Image
               source={
@@ -209,15 +296,15 @@ export default function ResultScreen({ navigation }) {
           <View style={styles.actions}>
             <Pressable
               onPress={playAgain}
+              disabled={restarting}
               style={({ pressed }) => [
                 styles.button,
                 pressed && styles.pressed,
+                restarting && styles.disabled,
               ]}
             >
               <Image
-                source={require(
-                  '../assets/img/REINICIAR.png'
-                )}
+                source={require('../assets/img/REINICIAR.png')}
                 style={styles.buttonImage}
                 resizeMode="contain"
               />
@@ -225,15 +312,15 @@ export default function ResultScreen({ navigation }) {
 
             <Pressable
               onPress={goHome}
+              disabled={restarting}
               style={({ pressed }) => [
                 styles.button,
                 pressed && styles.pressed,
+                restarting && styles.disabled,
               ]}
             >
               <Image
-                source={require(
-                  '../assets/img/HOME.png'
-                )}
+                source={require('../assets/img/HOME.png')}
                 style={styles.buttonImage}
                 resizeMode="contain"
               />
@@ -242,13 +329,12 @@ export default function ResultScreen({ navigation }) {
         </View>
       </SafeAreaView>
 
-      {/* Modal con los puntajes */}
       <Modal
         visible={scoresVisible}
         transparent
         animationType="fade"
         statusBarTranslucent
-        onRequestClose={() => setScoresVisible(false)}
+        onRequestClose={closeScores}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -257,7 +343,7 @@ export default function ResultScreen({ navigation }) {
             </Text>
 
             <Text style={styles.modalSubtitle}>
-              Mejores tiempos
+              Top 10 mejores tiempos
             </Text>
 
             <View style={styles.scoreHeader}>
@@ -288,7 +374,7 @@ export default function ResultScreen({ navigation }) {
                 keyExtractor={(item, index) =>
                   item.id
                     ? String(item.id)
-                    : String(index)
+                    : `score-${index}`
                 }
                 style={styles.scoreList}
                 contentContainerStyle={
@@ -305,7 +391,7 @@ export default function ResultScreen({ navigation }) {
             )}
 
             <Pressable
-              onPress={() => setScoresVisible(false)}
+              onPress={closeScores}
               style={({ pressed }) => [
                 styles.closeButton,
                 pressed && styles.pressed,
@@ -337,18 +423,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
+  loadingScreen: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  loadingText: {
+    marginTop: 14,
+    color: '#FBAB20',
+    fontSize: 17,
+    fontFamily: 'Comic Sans MS',
+  },
+
   title: {
     width: '100%',
-    marginTop: 80,
+    marginTop: 70,
     fontSize: 40,
     color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
     textAlign: 'center',
     textShadowColor: '#8e3410',
-    textShadowOffset: {
-      width: 2,
-      height: 2,
-    },
+    textShadowOffset: { width: 3, height: 2 },
     textShadowRadius: 1,
   },
 
@@ -362,7 +458,7 @@ const styles = StyleSheet.create({
     width: '80%',
     backgroundColor: 'rgba(255,255,255,0.78)',
     borderRadius: 30,
-    paddingVertical: 18,
+    paddingVertical: 16,
     paddingHorizontal: 25,
     alignItems: 'center',
     borderWidth: 3,
@@ -376,8 +472,16 @@ const styles = StyleSheet.create({
     color: '#FBAB20',
   },
 
+  playerName: {
+    marginTop: 4,
+    color: '#555',
+    fontSize: 18,
+    fontFamily: 'Comic Sans MS',
+    textAlign: 'center',
+  },
+
   time: {
-    marginTop: 6,
+    marginTop: 4,
     fontSize: 36,
     fontFamily: 'Comic Sans MS',
     color: '#FBAB20',
@@ -438,6 +542,10 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.8,
     transform: [{ scale: 0.97 }],
+  },
+
+  disabled: {
+    opacity: 0.5,
   },
 
   modalOverlay: {

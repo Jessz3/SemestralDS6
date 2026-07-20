@@ -16,6 +16,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { audioRounds, figures } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
+import { playCorrectSound } from '../utils/soundEffects';
 
 export default function AudioGameScreen({ navigation }) {
   const rounds = useMemo(() => shuffle(audioRounds), []);
@@ -63,7 +64,7 @@ export default function AudioGameScreen({ navigation }) {
     if (locked) return;
 
     if (item.id === current.id) {
-      setFeedback('¡Correcto! ⭐');
+      playCorrectSound();
       setLocked(true);
 
       setTimeout(() => {
@@ -141,6 +142,7 @@ export default function AudioGameScreen({ navigation }) {
 
           <Footer
             helpText="¡Toca el parlante y elige la figura que corresponde!"
+            audioSource={require('../assets/audio/AudioGame.mp3')}
             containerStyle={styles.footer}
           />
 

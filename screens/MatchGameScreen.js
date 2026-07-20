@@ -15,6 +15,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { matchPairs } from '../utils/gameData';
 import shuffle from '../utils/shuffle';
+import { playCorrectSound } from '../utils/soundEffects';
 
 export default function MatchGameScreen({ navigation }) {
   const leftItems = matchPairs;
@@ -105,6 +106,8 @@ export default function MatchGameScreen({ navigation }) {
         rightId === leftId &&
         !isConnected(leftId)
       ) {
+        playCorrectSound();
+
         const start =
           positions.current.left[leftId];
 
@@ -323,6 +326,7 @@ export default function MatchGameScreen({ navigation }) {
 
           <Footer
             helpText="¡Arrastra cada figura de la izquierda hasta su pareja!"
+            audioSource={require('../assets/audio/MatchGame.mp3')}
             containerStyle={styles.footer}
           />
 

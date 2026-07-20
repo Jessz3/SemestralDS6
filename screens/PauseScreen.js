@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Image,
   ImageBackground,
@@ -10,22 +10,88 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import {
+  pauseGame,
+  resumeGame,
+} from '../storage/storage';
+
 export default function PauseScreen({ navigation }) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [isAngry, setIsAngry] = useState(false);
 
+  useEffect(() => {
+    const pauseCurrentGame = async () => {
+      try {
+        await pauseGame();
+      } catch (error) {
+        console.log(
+          'No se pudo pausar el cronómetro:',
+          error
+        );
+      }
+    };
+
+    pauseCurrentGame();
+
+    /*
+     * Esta limpieza también se ejecuta cuando el usuario
+     * regresa mediante el botón físico o un gesto.
+     */
+    return () => {
+      resumeGame().catch((error) => {
+        console.log(
+          'No se pudo reanudar el cronómetro:',
+          error
+        );
+      });
+    };
+  }, []);
+
   const openExitConfirmation = () => {
-    // 10 % de probabilidad de mostrar a Figuralicia enojada.
-    // En el otro 90 % se mostrará triste.
+    /*
+     * 10 % de probabilidad de mostrar
+     * a Figuralicia enojada.
+     */
     const showAngryFiguralicia = Math.random() < 0.1;
 
     setIsAngry(showAngryFiguralicia);
     setConfirmVisible(true);
   };
 
-  const handleExit = () => {
-    setConfirmVisible(false);
-    navigation.replace('Home');
+  const handleContinue = async () => {
+    try {
+      await resumeGame();
+    } catch (error) {
+      console.log(
+        'No se pudo reanudar la partida:',
+        error
+      );
+    } finally {
+      navigation.goBack();
+    }
+  };
+
+  const handleExit = async () => {
+    try {
+      /*
+       * Se cierra la pausa almacenada antes de abandonar.
+       * Aunque la sesión ya no se use, evita dejar
+       * pauseStartTime guardado.
+       */
+      await resumeGame();
+    } catch (error) {
+      console.log(
+        'No se pudo cerrar correctamente la pausa:',
+        error
+      );
+    } finally {
+      setConfirmVisible(false);
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    }
   };
 
   return (
@@ -59,7 +125,7 @@ export default function PauseScreen({ navigation }) {
               </Pressable>
 
               <Pressable
-                onPress={() => navigation.goBack()}
+                onPress={handleContinue}
                 style={({ pressed }) => [
                   styles.buttonContainer,
                   pressed && styles.pressed,
@@ -96,6 +162,7 @@ export default function PauseScreen({ navigation }) {
         visible={confirmVisible}
         transparent
         animationType="fade"
+        statusBarTranslucent
         onRequestClose={() => setConfirmVisible(false)}
       >
         <View style={styles.modalOverlay}>
@@ -119,6 +186,9 @@ export default function PauseScreen({ navigation }) {
             </Text>
 
             <View style={styles.buttonsRow}>
+              {/*
+               * Cierra el modal y permanece en pausa.
+               */}
               <Pressable
                 onPress={() => setConfirmVisible(false)}
                 style={({ pressed }) => [
@@ -133,6 +203,9 @@ export default function PauseScreen({ navigation }) {
                 />
               </Pressable>
 
+              {/*
+               * Confirma que desea abandonar la partida.
+               */}
               <Pressable
                 onPress={handleExit}
                 style={({ pressed }) => [
@@ -185,15 +258,6 @@ const styles = StyleSheet.create({
     height: 120,
   },
 
-  message: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-    marginTop: 12,
-    marginBottom: 25,
-  },
-
   buttonsRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -244,10 +308,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.55)',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
 
   confirmCard: {
     width: '85%',
+    maxWidth: 420,
     backgroundColor: '#FFFFFF',
     borderRadius: 30,
     paddingVertical: 30,

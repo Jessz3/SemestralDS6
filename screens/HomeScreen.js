@@ -177,5 +177,6 @@ const styles = StyleSheet.create({
     width: 230,
     height: 100,
     opacity: 100,
+    volume: 0.35,
   },
 });
