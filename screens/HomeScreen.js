@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     fontSize: 65,
     color: '#FBAB20',
     fontFamily: 'Comic Sans MS',
-    textShadowColor: '#FFFFFF',
+    textShadowColor: '#8e3410',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
   },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 21,
     textAlign: 'center',
     fontFamily: 'Comic Sans MS',
-    color: '#FBAB20',
+    color: '#8e3410',
   },
 
   startButton: {
