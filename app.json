@@ -10,11 +10,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.perfekz.figuralo67"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "assetBundlePatterns": ["**/*"]
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "108ec648-1034-44a2-ad3e-f57b0bd3753c"
+      }
+    }
   }
 }
